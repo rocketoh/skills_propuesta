@@ -1,0 +1,12 @@
+# Responsable (owner) de cada skill.
+# GitHub exige la aprobación del owner en un PR que toque su carpeta.
+# Reemplaza los usuarios de ejemplo por los handles reales de GitHub.
+
+/skills/adf-validate-pipeline/         @ana-ruiz
+/skills/sql-format-query/              @luis-gomez
+/skills/synapse-generate-notebook/     @orlando-herrera
+
+# Cambios a la estructura del repo (índice, convenciones, pipeline) los revisa el equipo base.
+/INDEX.md        @orlando-herrera
+/README.md       @orlando-herrera
+/CODEOWNERS      @orlando-herrera
