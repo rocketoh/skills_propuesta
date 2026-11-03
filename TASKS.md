@@ -4,7 +4,7 @@ Archivo de trabajo del equipo. Vamos marcando `[x]` lo realizado.
 No forma parte del repo de skills; es nuestro seguimiento interno.
 Convención: nombres de archivos y carpetas en inglés, contenido en español.
 
-Última actualización: 2026-11-02 (sync-skills.sh construido y probado; investigaciones nativas completadas)
+Última actualización: 2026-11-03 (primera skill con valor real: adf-build-pipeline, probada contra el repo real de ADF)
 
 ---
 
