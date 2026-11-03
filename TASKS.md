@@ -72,8 +72,11 @@ Convención: nombres de archivos y carpetas en inglés, contenido en español.
 - [ ] Escribir casos de prueba para las otras skills (adf-validate-pipeline, synapse-generate-notebook)
 - [x] Hacer explícito el comportamiento de synapse-generate-notebook: CREAR archivo `.ipynb` (antes era ambiguo)
 - [ ] Prueba didáctica de COMPOSICIÓN de skills (notebook + SQL formateado). Secuencia:
-      1) push del catálogo  2) pull en el clon  3) añadir `synapse-generate-notebook` al skills.txt del proyecto
-      4) re-ejecutar sync-skills.sh  5) en Claude Code pedir un notebook con un query formateado
+      [x] 1) push del catálogo  [x] 2) pull en el clon  [x] 3) añadir `synapse-generate-notebook` al skills.txt
+      [x] 4) re-ejecutar sync-skills.sh (copió synapse + sql, 2/2)  [x] 5) en Claude Code pedir un notebook con un query formateado
+      RESULTADO: ÉXITO. Generó leer_sgbstdn.ipynb (válido) con el SQL formateado dentro. Las DOS skills
+      compusieron solas. Además el casing (sgbstdn_ID→sgbstdn_id) confirma que la regla nueva se propagó
+      por todo el flujo (editar→push→pull→sync→usar).
       Valida que el agente usa DOS skills juntas (synapse crea el .ipynb + sql-format-query formatea la celda SQL).
 - [ ] (Futuro, solo si duele) Validación automática en CI (pipeline)
 

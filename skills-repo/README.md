@@ -85,8 +85,44 @@ Esta sección es para el **dev que consume** skills (no para quien las crea).
 1. Clona este catálogo una sola vez, fuera de tus proyectos, y actualízalo con `git pull`.
 2. En la raíz de tu proyecto crea un archivo **`skills.txt`** con una skill por línea
    (el nombre exacto de su carpeta en el catálogo). Es el análogo a `requirements.txt`.
-3. Copia cada skill listada a la carpeta `.claude/skills/` de tu proyecto, **solo si su `status`
-   es `stable` o `production`** (las `experimental` no se aprovisionan).
+3. Ejecuta **`sync-skills.sh`** (ver abajo). Copia a `.claude/skills/` de tu proyecto cada skill
+   listada que esté en `status` `stable` o `production`; las `experimental` se omiten con aviso.
+
+### Cómo ejecutar `sync-skills.sh`
+
+El script está escrito en **bash**, porque en equipos con Windows corporativo PowerShell suele estar
+bloqueado por política (y Python restringido). Bash viene con Git, que ya tienes por usar GitHub.
+
+**Forma recomendada — Git Bash (como lo haría un dev):**
+
+1. En el Explorador de Windows, abre la carpeta de **tu proyecto**.
+2. Clic derecho en un espacio vacío → **"Git Bash Here"** (o "Open Git Bash here").
+3. En esa terminal (el prompt termina en `$`, no en `PS>`), ejecuta:
+   ```bash
+   bash /ruta/al/catalogo/skills-repo/sync-skills.sh
+   ```
+   Sin argumento, usa el directorio actual como proyecto. También puedes indicarlo:
+   ```bash
+   bash /ruta/al/catalogo/skills-repo/sync-skills.sh /c/ruta/a/tu/proyecto
+   ```
+
+**Alternativa — PowerShell o CMD** (si no quieres cambiar de terminal):
+
+Llama al `bash.exe` de Git por su ruta completa. La ruta depende de dónde instalaste Git;
+encuéntrala con `(Get-Command git).Source` en PowerShell (sube dos carpetas y entra a `bin\bash.exe`).
+
+```powershell
+# PowerShell (ajusta la ruta de bash.exe a tu instalación de Git):
+& "C:\Program Files\Git\bin\bash.exe" /ruta/al/catalogo/skills-repo/sync-skills.sh /c/ruta/a/tu/proyecto
+```
+```bat
+:: CMD (ajusta la ruta de bash.exe a tu instalación de Git):
+"C:\Program Files\Git\bin\bash.exe" /ruta/al/catalogo/skills-repo/sync-skills.sh /c/ruta/a/tu/proyecto
+```
+
+> Dentro del comando, las rutas van en formato Git Bash (`/c/Dev/...`), no `C:\Dev\...`.
+
+Al terminar, el script imprime un resumen (copiadas / omitidas / no encontradas). Verifica con `ls .claude/skills/`.
 
 ### Reglas que evitan errores comunes
 
@@ -97,11 +133,5 @@ Esta sección es para el **dev que consume** skills (no para quien las crea).
 - **Solo aprovisiona lo que el proyecto usa de verdad.** El catálogo puede crecer a N skills;
   tu proyecto solo copia las que declara en su `skills.txt`.
 
-> Hoy este flujo es manual. Cuando copiar a mano empiece a doler, un script lo automatizará
-> (ver "Cómo se usará (más adelante)").
-
-## Cómo se usará (más adelante)
-
-Cuando copiar skills a mano empiece a doler, cada proyecto declarará las que necesita
-(un `skills.txt`, como un `requirements.txt`) y un script las aprovisionará desde este catálogo
-comprobando su `status`. **Eso aún no se automatiza**: primero validamos estructura y hábitos.
+> El filtro de `status` lo aplica `sync-skills.sh` automáticamente: no tienes que revisar a mano
+> si una skill está lista. Si una sigue en `experimental`, el script avisa y no la copia.
