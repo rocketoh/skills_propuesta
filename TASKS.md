@@ -4,7 +4,7 @@ Archivo de trabajo del equipo. Vamos marcando `[x]` lo realizado.
 No forma parte del repo de skills; es nuestro seguimiento interno.
 Convención: nombres de archivos y carpetas en inglés, contenido en español.
 
-Última actualización: 2026-11-02 (Fases 4 y 5 probadas a mano; 3 fricciones registradas)
+Última actualización: 2026-11-02 (sync-skills.sh construido y probado; investigaciones nativas completadas)
 
 ---
 
@@ -46,6 +46,7 @@ Convención: nombres de archivos y carpetas en inglés, contenido en español.
 ## Fase 4 — Probar el flujo real (valida la idea de "descargar y aprovisionar")
 
 - [x] Clonar el repo en una ubicación de prueba (`skills_propuesta_repo_clonado`)
+- [x] Actualizar el clon con `git pull` (simula al dev manteniendo el catálogo al día)
 - [x] Copiar a mano una skill a un proyecto de ejemplo (`skills_propuesta_test_proyecto/.claude/skills/`)
 - [ ] Confirmar que el agente la detecta y la usa (pendiente: lo valida el dev abriendo Claude Code en el proyecto)
 - [x] Anotar fricciones encontradas (ver sección "Fricciones encontradas")
@@ -54,8 +55,14 @@ Convención: nombres de archivos y carpetas en inglés, contenido en español.
 
 - [x] Definir `skills.txt` por proyecto (análogo a `requirements.txt`) — probado a mano
 - [x] Simular el aprovisionamiento a mano (leer skills.txt, checar status, copiar solo las aptas)
-- [ ] Script de aprovisionamiento que lee `skills.txt`, comprueba `status` y copia
-- [ ] Decidir: ¿script propio o mecanismo nativo de cada herramienta?
+- [x] Convertir fricciones en reglas de consumo documentadas en el README
+- [x] Construir `sync-skills` propio como alternativa
+  - [x] v1 en **bash** (`sync-skills.sh`) — lee skills.txt, checa status, copia aptas, crea `.claude` minúsculas. PROBADO ✓
+  - [x] Descartado PowerShell (`.ps1`): bloqueado por política corporativa (UserPolicy=Restricted). Ver fricción #4.
+- [x] Investigar mecanismo nativo de **Claude Code** (plugins + marketplaces de Git) — ver "Hallazgos de investigación"
+- [x] Investigar mecanismo nativo de **Codex** (skills en `.agents/skills` + plugins + AGENTS.md) — ver "Hallazgos de investigación"
+- [ ] Decidir: ¿script propio, nativo (plugins/marketplace), o híbrido? (ahora con datos para decidir)
+- [ ] (Futuro) Probar el camino nativo de plugins/marketplace de Claude Code como comparación
 
 ## Fase 6 — Calidad (futuro)
 
@@ -88,6 +95,40 @@ Estas son el verdadero resultado de probar el flujo. Cada una justifica una mejo
 3. **La carpeta `.claude` debe ir en minúsculas.** Se creó como `.Claude` y en Windows funcionó
    por casualidad (no distingue mayúsculas), pero en Linux/contenedores (agente autónomo) fallaría.
    → Documentar la convención en el README; idealmente el script crea la carpeta con el nombre correcto.
+
+4. **PowerShell está bloqueado por política corporativa** (GPO: UserPolicy=Restricted, sobrescribe
+   incluso `-ExecutionPolicy Bypass`). Python también está restringido en estas máquinas. → El tooling
+   debe ser **bash vía Git Bash** (todos lo tienen por usar GitHub). Por eso `sync-skills` es `.sh`, no `.ps1`.
+
+## Hallazgos de investigación (nativo vs. propio) — 2026-11-02
+
+**Claude Code (nativo):**
+- SÍ tiene distribución nativa: **plugins + marketplaces de Git**. Un marketplace es un repo con
+  `.claude-plugin/marketplace.json`. Se instala por proyecto con `--scope project`, dejando la selección
+  versionada en `.claude/settings.json` (`enabledPlugins`, `extraKnownMarketplaces`).
+- La granularidad nativa es el **plugin**, no la skill suelta. Para selección exacta por proyecto habría que
+  empaquetar "un plugin por skill".
+- NO tiene estados `experimental/stable/production` por skill. Lo más parecido: dos marketplaces por "canal"
+  (ref stable vs. latest). Nuestro `status` en el frontmatter NO existe de forma nativa.
+- NO hay comando que "sincronice a `.claude/skills/` lo declarado en un archivo" → eso es justo lo que hace nuestro script.
+
+**Codex (nativo):**
+- SÍ tiene skills nativas: carpeta con `SKILL.md` (frontmatter `name`+`description`, carga on-demand), igual que Claude.
+  Pero viven en **`.agents/skills`** (no `.claude/skills`). También usa `AGENTS.md` jerárquico.
+- Distribución entre proyectos/equipo: vía skills commiteadas en el repo o **plugins** de OpenAI.
+- Los "custom prompts" quedaron **deprecados**; la unidad reutilizable oficial ahora es la skill.
+
+**Estándar multi-herramienta:**
+- `AGENTS.md` es un estándar abierto (Linux Foundation) adoptado por 25+ herramientas (Codex, Copilot, Cursor…).
+  Claude Code recientemente lee `AGENTS.md` si falta `CLAUDE.md`. → Esto valida nuestros stubs.
+- PERO el estándar es para el **archivo de instrucciones**, NO para el formato de "skill". Claude (`.claude/skills`)
+  y Codex (`.agents/skills`) usan ambos `SKILL.md` con `name`+`description` (convergen), pero en rutas distintas.
+  No existe aún distribución nativa única cross-tool para skills → un script/adaptador sigue teniendo sentido.
+
+**Implicación para la propuesta:** nuestra elección de `SKILL.md` con `name`+`description` fue acertada
+(es el formato común de facto). El `status` y la selección por `skills.txt` + script son valor añadido que
+lo nativo no da hoy. Decisión pendiente: script propio (control, multi-LLM) vs. plugins/marketplace (nativo
+Claude, sin status). Posible híbrido a futuro.
 
 ## Preguntas abiertas / por decidir
 
