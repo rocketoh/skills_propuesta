@@ -48,7 +48,7 @@ Convención: nombres de archivos y carpetas en inglés, contenido en español.
 - [x] Clonar el repo en una ubicación de prueba (`skills_propuesta_repo_clonado`)
 - [x] Actualizar el clon con `git pull` (simula al dev manteniendo el catálogo al día)
 - [x] Copiar a mano una skill a un proyecto de ejemplo (`skills_propuesta_test_proyecto/.claude/skills/`)
-- [ ] Confirmar que el agente la detecta y la usa (pendiente: lo valida el dev abriendo Claude Code en el proyecto)
+- [x] Confirmar que el agente la detecta (Claude Code en el proyecto la reconoce como skill válida)
 - [x] Anotar fricciones encontradas (ver sección "Fricciones encontradas")
 
 ## Fase 5 — Automatización (solo cuando copiar a mano empiece a doler)
@@ -66,8 +66,23 @@ Convención: nombres de archivos y carpetas en inglés, contenido en español.
 
 ## Fase 6 — Calidad (futuro)
 
-- [ ] Definir qué significa "testing" para una skill
-- [ ] Validación automática en CI (pipeline)
+- [x] Definir qué significa "testing" para una skill (ver nota abajo)
+- [x] Primer test real ejecutado (`sql-format-query`) — disparó bien; reveló vacío en reglas (casing de columnas)
+- [x] Cerrar el ciclo: decisión (columnas en minúsculas) → regla explícita en el SKILL.md → caso de prueba documentado
+- [ ] Escribir casos de prueba para las otras skills (adf-validate-pipeline, synapse-generate-notebook)
+- [x] Hacer explícito el comportamiento de synapse-generate-notebook: CREAR archivo `.ipynb` (antes era ambiguo)
+- [ ] Prueba didáctica de COMPOSICIÓN de skills (notebook + SQL formateado). Secuencia:
+      1) push del catálogo  2) pull en el clon  3) añadir `synapse-generate-notebook` al skills.txt del proyecto
+      4) re-ejecutar sync-skills.sh  5) en Claude Code pedir un notebook con un query formateado
+      Valida que el agente usa DOS skills juntas (synapse crea el .ipynb + sql-format-query formatea la celda SQL).
+- [ ] (Futuro, solo si duele) Validación automática en CI (pipeline)
+
+Nota — qué es "testear" una skill (dos niveles, pueden fallar por separado):
+  1. Disparo: ¿el modelo elige la skill cuando debe? (depende del `description`)
+  2. Comportamiento: al usarla, ¿hace lo correcto y respeta sus reglas?
+Un test = un caso documentado "con esta entrada, espero este comportamiento", corrido a mano.
+NO automatizar al inicio: la salida del modelo es texto no determinista, no un assert exacto.
+Ojo: que Claude Code diga que la skill es "válida" solo verifica la ESTRUCTURA, no que funcione.
 
 ---
 
@@ -79,6 +94,12 @@ Convención: nombres de archivos y carpetas en inglés, contenido en español.
 - Idioma: archivos y carpetas en inglés; contenido en español. La acción del nombre es verbo en inglés (`validate`, `format`, `generate`).
 - Multi-LLM: README como única fuente de verdad; cada agente tiene un stub que apunta a él.
 - Seguridad: nada de secretos ni datos de cliente en el repo.
+- **Aprovisionamiento: seguimos con script propio `sync-skills.sh`** (no con marketplaces nativos).
+  Razón: es multi-LLM (una fuente de verdad para Claude, Codex y futuros) y respeta nuestro `status`,
+  dos cosas que lo nativo no cubre hoy. Lo nativo es por-herramienta y obligaría a duplicar el catálogo.
+  DISPARADOR PARA REEVALUAR: si el equipo se vuelve 100% Claude Code (sin Codex/Gemini) y las skills
+  crecen mucho, entonces evaluar el marketplace nativo de Claude (da versionado/updates que el script no tiene).
+- Tooling en **bash** (no PowerShell/Python): política corporativa bloquea ambos. Git Bash está disponible.
 
 ## Fricciones encontradas (hallazgos de la prueba manual — Fases 4 y 5)
 
@@ -132,6 +153,6 @@ Claude, sin status). Posible híbrido a futuro.
 
 ## Preguntas abiertas / por decidir
 
-- ¿Script de sync propio o camino nativo de Claude Code / Codex? (revisar en Fase 5)
+- ~~¿Script de sync propio o camino nativo?~~ → DECIDIDO: script propio `sync-skills.sh` (ver Decisiones).
 - Handles reales de GitHub para `CODEOWNERS`.
 - ¿Qué es un "test" de skill y cómo se automatiza? (Fase 6)

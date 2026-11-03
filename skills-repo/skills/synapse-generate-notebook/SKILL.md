@@ -9,7 +9,7 @@ tools: [claude-code, codex]
 # Generar plantilla de notebook de datos
 
 Produce el esqueleto de un notebook con una estructura de celdas estándar del equipo.
-Genera el contenido como celdas de código y markdown; no ejecuta nada.
+**Crea un archivo `.ipynb` real** con las celdas de código y markdown; no ejecuta nada.
 
 ## Estructura de celdas
 
@@ -24,6 +24,10 @@ Genera el contenido como celdas de código y markdown; no ejecuta nada.
 
 ## Reglas
 
-- Pregunta primero: motor (Databricks / Synapse / genérico), lenguaje (PySpark / SQL) y nombre de la tarea.
+- Pregunta primero: motor (Databricks / Synapse / genérico), lenguaje (PySpark / SQL), nombre de la tarea
+  y la ruta/nombre del archivo a crear (por defecto `<nombre-tarea>.ipynb` en el directorio actual).
+- **Crea el archivo como un `.ipynb` válido** (formato JSON de Jupyter: `nbformat` 4, celdas `markdown` y `code`,
+  `outputs` vacíos, sin ejecutar). Al terminar, informa la ruta del archivo creado.
 - Deja `TODO:` explícitos donde falte información del usuario; no inventes rutas ni nombres de tabla reales.
 - Mantén las celdas de validación aunque el usuario no las pida: son parte del estándar.
+- Si otra skill aplica a una celda (p. ej. formatear un SQL), aplícala al contenido de esa celda.

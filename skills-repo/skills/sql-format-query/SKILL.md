@@ -13,6 +13,8 @@ Reescribe un query SQL aplicando un estilo consistente, sin cambiar su semántic
 ## Reglas de estilo
 
 - Palabras clave en MAYÚSCULAS (`SELECT`, `FROM`, `WHERE`, `JOIN`, `GROUP BY`).
+- Nombres de columna y tabla (identificadores) en minúsculas: `sgbstdn_ID` → `sgbstdn_id`.
+  (En Oracle los identificadores sin comillas no distinguen mayúsculas, así que no cambia la lógica.)
 - Un campo por línea en el `SELECT`, con la coma al inicio de línea.
 - `JOIN` y su `ON` en líneas separadas, indentados bajo el `FROM`.
 - Alias de tabla cortos y en minúsculas; usar `AS` explícito para alias de columna.
@@ -25,3 +27,23 @@ Reescribe un query SQL aplicando un estilo consistente, sin cambiar su semántic
 - No agregues ni quites columnas.
 - Si el SQL tiene un error de sintaxis que impide formatearlo, no adivines: señala la línea y pide aclaración.
 - Devuelve el query formateado en un bloque de código y, debajo, una lista breve de los cambios de formato aplicados.
+
+## Casos de prueba
+
+Ejemplos para verificar la skill a mano (entrada → comportamiento esperado).
+
+### Caso 1 — formato básico y casing
+
+Entrada:
+```sql
+Select sgbstdn_pidm, sgbstdn_ID, sgbstdn_camp_Code from sgbstdn
+```
+
+Comportamiento esperado:
+```sql
+SELECT sgbstdn_pidm
+    , sgbstdn_id
+    , sgbstdn_camp_code
+FROM sgbstdn
+```
+Verifica: palabras clave en mayúsculas; identificadores en minúsculas; un campo por línea con coma al inicio; sin cambiar columnas ni su orden.
