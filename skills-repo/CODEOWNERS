@@ -2,6 +2,7 @@
 # GitHub exige la aprobación del owner en un PR que toque su carpeta.
 # Reemplaza los usuarios de ejemplo por los handles reales de GitHub.
 
+/skills/adf-build-pipeline/            @orlando.herrera
 /skills/adf-validate-pipeline/         @ana.ruiz
 /skills/sql-format-query/              @luis.gomez
 /skills/synapse-generate-notebook/     @orlando.herrera
