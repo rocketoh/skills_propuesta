@@ -78,6 +78,28 @@ No existe aún un formato de "skill" portable entre todos. La estrategia:
 
 No construimos adaptadores todavía. Se enuncia aquí para que la estructura ya lo contemple.
 
+## Cómo aprovisionar skills en tu proyecto
+
+Esta sección es para el **dev que consume** skills (no para quien las crea).
+
+1. Clona este catálogo una sola vez, fuera de tus proyectos, y actualízalo con `git pull`.
+2. En la raíz de tu proyecto crea un archivo **`skills.txt`** con una skill por línea
+   (el nombre exacto de su carpeta en el catálogo). Es el análogo a `requirements.txt`.
+3. Copia cada skill listada a la carpeta `.claude/skills/` de tu proyecto, **solo si su `status`
+   es `stable` o `production`** (las `experimental` no se aprovisionan).
+
+### Reglas que evitan errores comunes
+
+- **El archivo debe llamarse exactamente `skills.txt`** (no `skills.txt.txt`). En Windows, activa
+  *Ver → Extensiones de nombre de archivo* para no crear una doble extensión por accidente.
+- **La carpeta destino se escribe en minúsculas: `.claude`** (no `.Claude`). En Windows funciona
+  de cualquier forma, pero en Linux o en un contenedor (agente autónomo) solo se detecta en minúsculas.
+- **Solo aprovisiona lo que el proyecto usa de verdad.** El catálogo puede crecer a N skills;
+  tu proyecto solo copia las que declara en su `skills.txt`.
+
+> Hoy este flujo es manual. Cuando copiar a mano empiece a doler, un script lo automatizará
+> (ver "Cómo se usará (más adelante)").
+
 ## Cómo se usará (más adelante)
 
 Cuando copiar skills a mano empiece a doler, cada proyecto declarará las que necesita
