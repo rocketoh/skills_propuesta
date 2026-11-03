@@ -1,7 +1,7 @@
 ---
 name: adf-build-pipeline
 description: Usa esta skill cuando el usuario quiera CREAR un pipeline de Azure Data Factory desde su proyecto (p. ej. "crea un pipeline que extraiga del servidor A al datalake az1", "arma un Copy de tal origen a tal destino") y dejarlo en una rama de Git para verlo en ADF Studio. Genera el JSON del pipeline (y sus datasets) con el formato y la carpeta que ADF espera, y lo sube SOLO a la rama de desarrollo que el usuario indique. No despliega a producción ni publica; solo escribe artefactos en una rama para que el dev los revise en ADF Studio.
-status: experimental
+status: stable
 owner: orlando.herrera
 tools: [claude-code]
 ---
